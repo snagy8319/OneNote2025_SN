@@ -21,6 +21,7 @@ class NoteEditActivity : AppCompatActivity() {
         val noteEditMessage = findViewById<EditText>(R.id.noteEditMessage)
         val buttonSave = findViewById<Button>(R.id.buttonSave)
 
+        // Set title and message if available
         noteEditTitle.setText(Preferences(this).getNoteTitle())
         noteEditMessage.setText(Preferences(this).getNoteMessage())
 
