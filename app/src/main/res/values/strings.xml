@@ -6,4 +6,5 @@
     <string name="message">Message</string>
     <string name="add">Add</string>
     <string name="save">Save</string>
+    <string name="delete">Delete</string>
 </resources>

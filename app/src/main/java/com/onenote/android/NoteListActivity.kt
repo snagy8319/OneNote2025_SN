@@ -12,6 +12,7 @@ class NoteListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_list)
 
+        // Set up toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
     }
 
