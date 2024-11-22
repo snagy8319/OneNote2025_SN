@@ -5,4 +5,5 @@
     <string name="title">Betreff</string>
     <string name="message">Nachricht</string>
     <string name="add">Hinzufügen</string>
+    <string name="save">Speichern</string>
 </resources>

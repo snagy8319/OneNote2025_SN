@@ -1,5 +1,6 @@
 package com.onenote.android
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,8 +23,10 @@ class NoteListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.add) {
-            // TODO Open NoteEditActivity which includes
-            //  2 EditTextViews with hint and a save button
+
+            // Open NoteEditActivity
+            val intent = Intent(this, NoteEditActivity::class.java)
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)

@@ -24,6 +24,9 @@
         <activity
             android:name=".NoteListActivity">
         </activity>
+        <activity
+            android:name=".NoteEditActivity">
+        </activity>
     </application>
 
 </manifest>
