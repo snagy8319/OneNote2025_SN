@@ -29,4 +29,9 @@
         style="@style/ListItem.Message"
         android:text="@string/message"/>
 
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
