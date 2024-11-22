@@ -22,8 +22,10 @@ class NoteListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.add) {
-            Toast.makeText(this, "Add Note clicked", Toast.LENGTH_LONG).show()
+            // TODO Open NoteEditActivity which includes
+            //  2 EditTextViews with hint and a save button
         }
+
         return super.onOptionsItemSelected(item)
     }
 }
