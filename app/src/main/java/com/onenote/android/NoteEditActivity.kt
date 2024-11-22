@@ -21,6 +21,9 @@ class NoteEditActivity : AppCompatActivity() {
         val noteEditMessage = findViewById<EditText>(R.id.noteEditMessage)
         val buttonSave = findViewById<Button>(R.id.buttonSave)
 
+        noteEditTitle.setText(Preferences(this).getNoteTitle())
+        noteEditMessage.setText(Preferences(this).getNoteMessage())
+
         // Set OnClickListener
         buttonSave.setOnClickListener{
             Toast.makeText(this, R.string.saved, Toast.LENGTH_LONG).show()
