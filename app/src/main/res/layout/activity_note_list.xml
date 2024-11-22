@@ -12,12 +12,14 @@
         android:id="@+id/noteTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Title"/>
+        style="@style/ListItem.Title"
+        android:text="@string/title"/>
 
     <TextView
         android:id="@+id/noteMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Message"/>
+        style="@style/ListItem.Message"
+        android:text="@string/message"/>
 
 </LinearLayout>
