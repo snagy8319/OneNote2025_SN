@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.OneNote2025" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/blue</item>
     </style>
 
     <style name="Theme.OneNote2025" parent="Base.Theme.OneNote2025" />
@@ -23,6 +23,5 @@
         <item name="android:text">@string/login</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:backgroundTint">@color/blue</item>
     </style>
 </resources>

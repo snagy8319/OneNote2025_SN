@@ -1,5 +1,6 @@
 package com.onenote.android
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -12,13 +13,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Find views by IDs
         val buttonLogin = findViewById<Button>(R.id.login)
         val imageViewIcon = findViewById<ImageView>(R.id.icon)
-        val animationRotation = AnimationUtils.loadAnimation(this, R.anim.rotate)
 
+        // Animate Icon
+        val animationRotation = AnimationUtils.loadAnimation(this, R.anim.rotate)
+        imageViewIcon.startAnimation(animationRotation)
+
+        // Set OnClickListener
         buttonLogin.setOnClickListener{
-            imageViewIcon.startAnimation(animationRotation)
+            // Show Signed-In Toast
             Toast.makeText(this, R.string.signed_in, Toast.LENGTH_LONG).show()
+
+            // Create Intent and open NoteListActivity
+            val intent = Intent(this, NoteListActivity::class.java)
+            startActivity(intent)
+
+            // Finish MainActivity
+            finish()
         }
     }
 }
