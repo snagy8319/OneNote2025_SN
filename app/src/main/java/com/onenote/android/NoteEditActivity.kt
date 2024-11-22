@@ -1,19 +1,19 @@
 package com.onenote.android
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 
 class NoteEditActivity : AppCompatActivity() {
 
-    lateinit var preferences: Preferences
+    private lateinit var preferences: Preferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +58,21 @@ class NoteEditActivity : AppCompatActivity() {
         if (item.itemId == android.R.id.home) {
             finish()
         } else if (item.itemId == R.id.delete) {
-            preferences.setNoteTitle(null)
-            preferences.setNoteMessage(null)
-            finish()
+            showDeleteDialog()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDeleteDialog() {
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.delete_message))
+            .setPositiveButton(R.string.yes) { _, _ ->
+                preferences.setNoteTitle(null)
+                preferences.setNoteMessage(null)
+                finish()
+            }
+            .setNegativeButton(getString(R.string.no), null)
+            .show()
     }
 }
