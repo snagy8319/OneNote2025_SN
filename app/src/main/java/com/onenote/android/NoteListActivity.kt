@@ -29,6 +29,7 @@ class NoteListActivity : AppCompatActivity() {
         listView = findViewById(R.id.listView)
 
         // Simple ListView example
+        /*
         val title = Preferences(this).getNoteTitle()
         val items = arrayOf(title, title, title, title, title, title, title, title, title, title, title, title, title, title, title, title, title, title)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -36,11 +37,13 @@ class NoteListActivity : AppCompatActivity() {
             android.R.layout.simple_list_item_1, android.R.id.text1, items
         )
         listView.setAdapter(adapter)
+         */
     }
 
     override fun onResume() {
         super.onResume()
 
+        // Reload title and message from preferences
         noteTitle.text = Preferences(this).getNoteTitle()
         noteMessage.text = Preferences(this).getNoteMessage()
     }

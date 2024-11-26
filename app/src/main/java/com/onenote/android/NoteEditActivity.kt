@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 
 class NoteEditActivity : AppCompatActivity() {
 
@@ -26,7 +25,7 @@ class NoteEditActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.navigationIcon?.setTint(ContextCompat.getColor(this, R.color.white))
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
         // Find views by ID
         val noteEditTitle = findViewById<EditText>(R.id.noteEditTitle)
