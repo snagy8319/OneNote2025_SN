@@ -16,20 +16,6 @@
         android:background="@color/blue"
         app:titleTextColor="@color/white"/>
 
-    <TextView
-        android:id="@+id/noteTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/ListItem.Title"
-        android:text="@string/title"/>
-
-    <TextView
-        android:id="@+id/noteMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/ListItem.Message"
-        android:text="@string/message"/>
-
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"

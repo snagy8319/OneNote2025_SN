@@ -24,12 +24,30 @@ class NoteAdapter(context: Context, var notes: List<Note>): BaseAdapter() {
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view = inflater.inflate(R.layout.list_item_view, parent, false)
-        val title = view.findViewById<TextView>(R.id.title)
-        val message = view.findViewById<TextView>(R.id.message)
-        title.text = notes[position].title
-        message.text = notes[position].message
+        val view: View
+        val holder: ViewHolder
+
+        if (convertView == null) {
+            view = inflater.inflate(R.layout.list_item_view, parent, false)
+
+            holder = ViewHolder()
+            holder.title = view.findViewById(R.id.title)
+            holder.message = view.findViewById(R.id.message)
+
+            view.tag = holder
+        } else {
+            view = convertView
+            holder = convertView.tag as ViewHolder
+        }
+
+        holder.title.text = notes[position].title
+        holder.message.text = notes[position].message
 
         return view
+    }
+
+    private class ViewHolder {
+        lateinit var title: TextView
+        lateinit var message: TextView
     }
 }

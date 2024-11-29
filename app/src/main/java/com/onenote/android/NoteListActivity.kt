@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 class NoteListActivity : AppCompatActivity() {
 
-    lateinit var noteTitle: TextView
-    lateinit var noteMessage: TextView
     lateinit var listView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +22,6 @@ class NoteListActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         // Find views by ID
-        noteTitle = findViewById(R.id.noteTitle)
-        noteMessage = findViewById(R.id.noteMessage)
         listView = findViewById(R.id.listView)
 
         // Simple ListView example
@@ -46,9 +42,7 @@ class NoteListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        // Reload title and message from preferences
-        noteTitle.text = Preferences(this).getNoteTitle()
-        noteMessage.text = Preferences(this).getNoteMessage()
+        // Reload title and message
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
