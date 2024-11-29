@@ -29,15 +29,18 @@ class NoteListActivity : AppCompatActivity() {
         listView = findViewById(R.id.listView)
 
         // Simple ListView example
-        /*
         val title = Preferences(this).getNoteTitle()
-        val items = arrayOf(title, title, title, title, title, title, title, title, title, title, title, title, title, title, title, title, title, title)
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_list_item_1, android.R.id.text1, items
-        )
+        val note = Note("dsdsad", "dasdasdasdsdasdas")
+        val note1 = Note("xxxx", "yyyy")
+        val note2 = Note("111111", "22222")
+
+        val notes = mutableListOf(note)
+        notes.add(note1)
+        notes.add(note2)
+
+        val adapter = NoteAdapter(this, notes)
+
         listView.setAdapter(adapter)
-         */
     }
 
     override fun onResume() {
