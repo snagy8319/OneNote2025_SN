@@ -14,7 +14,7 @@ import androidx.room.Room
 class NoteEditActivity : AppCompatActivity() {
 
     private lateinit var preferences: Preferences
-    lateinit var noteDao: NoteDao
+    private lateinit var noteDao: NoteDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

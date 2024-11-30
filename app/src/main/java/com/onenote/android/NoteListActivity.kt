@@ -9,10 +9,13 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 
 class NoteListActivity : AppCompatActivity() {
 
-    lateinit var listView: ListView
+    private lateinit var listView: ListView
+    private lateinit var noteDao: NoteDao
+    private lateinit var adapter: NoteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,25 +27,24 @@ class NoteListActivity : AppCompatActivity() {
         // Find views by ID
         listView = findViewById(R.id.listView)
 
-        // Simple ListView example
-        val title = Preferences(this).getNoteTitle()
-        val note = Note("dsdsad", "dasdasdasdsdasdas")
-        val note1 = Note("xxxx", "yyyy")
-        val note2 = Note("111111", "22222")
+        // Initialize Room DB
+        val db = Room.databaseBuilder(
+            applicationContext,
+            NotesDatabase::class.java, "notes"
+        ).allowMainThreadQueries().build()
+        noteDao = db.noteDao()
+        adapter = NoteAdapter(this, noteDao.getAll())
 
-        val notes = mutableListOf(note)
-        notes.add(note1)
-        notes.add(note2)
-
-        val adapter = NoteAdapter(this, notes)
-
+        // Set adapter
         listView.setAdapter(adapter)
     }
 
     override fun onResume() {
         super.onResume()
 
-        // Reload title and message
+        // Reload notes
+        adapter.notes = noteDao.getAll()
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
