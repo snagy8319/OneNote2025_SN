@@ -1,5 +1,6 @@
 package com.onenote.android
 
+import android.util.Log
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -10,6 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NoteListActivity : AppCompatActivity() {
 
@@ -36,8 +40,24 @@ class NoteListActivity : AppCompatActivity() {
         noteDao = db.noteDao()
         adapter = NoteAdapter(this, noteDao.getAll(), selectedNoteId)
 
-        // Set adapter
-        listView.adapter = adapter
+
+        // Load notes asynchronously with error handling
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val notes = noteDao.getAll()
+                runOnUiThread {
+                    // Update UI with notes
+                    adapter.notes = notes
+                    listView.adapter = adapter
+
+                }
+            } catch (e: Exception) {
+                Log.e("NoteListActivity", "Error loading notes", e)
+                runOnUiThread {
+                    Toast.makeText(this@NoteListActivity, "Error loading notes", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         // Set item click listener
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
@@ -50,9 +70,22 @@ class NoteListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        // Reload notes
-        adapter.notes = noteDao.getAll()
-        adapter.notifyDataSetChanged()
+
+        // Reload notes asynchronously with error handling
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val notes = noteDao.getAll()
+                runOnUiThread {
+                    adapter.notes = notes
+                    adapter.notifyDataSetChanged()
+                }
+            } catch (e: Exception) {
+                Log.e("NoteListActivity", "Error reloading notes", e)
+                runOnUiThread {
+                    Toast.makeText(this@NoteListActivity, "Error reloading notes", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -60,7 +93,7 @@ class NoteListActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
- override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
         android.R.id.home -> {
             finish()
@@ -95,9 +128,19 @@ class NoteListActivity : AppCompatActivity() {
             .setPositiveButton(R.string.yes) { _, _ ->
                 val noteId = intent.getIntExtra("noteId", -1)
                 if (noteId != -1) {
-                    val note = noteDao.loadAllByIds(noteId).firstOrNull()
-                    note?.let {
-                        noteDao.delete(it)
+                    try {
+                        val note = noteDao.loadAllByIds(noteId).firstOrNull()
+                        note?.let {
+                            noteDao.delete(it)
+                        }
+                        runOnUiThread {
+                            Toast.makeText(this@NoteListActivity, "Note deleted", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        Log.e("NoteListActivity", "Error deleting note", e)
+                        runOnUiThread {
+                            Toast.makeText(this@NoteListActivity, "Error deleting note", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
                 finish()

@@ -10,10 +10,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.room.Room
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NoteEditActivity : AppCompatActivity() {
 
     private lateinit var noteDao: NoteDao
+    private lateinit var noteEditTitle: EditText
+    private lateinit var noteEditMessage: EditText
+    private lateinit var buttonSave: Button
+    private var noteId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,28 +45,44 @@ class NoteEditActivity : AppCompatActivity() {
         val buttonSave = findViewById<Button>(R.id.buttonSave)
 
         // Check if we are editing an existing note
-        val noteId = intent.getIntExtra("noteId", -1)
+        noteId = intent.getIntExtra("noteId", -1)
+
+
+        // Load note if editing
         if (noteId != -1) {
-            val note = noteDao.loadAllByIds(noteId).firstOrNull()
-            note?.let {
-                noteEditTitle.setText(it.title)
-                noteEditMessage.setText(it.message)
+            CoroutineScope(Dispatchers.IO).launch {
+                val note = noteDao.loadAllByIds(noteId).firstOrNull()
+                note?.let {
+                    runOnUiThread {
+                        noteEditTitle.setText(it.title)
+                        noteEditMessage.setText(it.message)
+                    }
+                }
             }
         }
+
         // Set OnClickListener
         buttonSave.setOnClickListener {
-            var note = Note(
-                noteEditTitle.editableText.toString(),
-                noteEditMessage.editableText.toString(),
-            )
-            if (noteId != -1) {
-                note.id = noteId
-                noteDao.update(note)
-            } else {
-                noteDao.insertAll(note)
+            CoroutineScope(Dispatchers.IO).launch {
+                val note = Note(
+                    noteEditTitle.editableText.toString(),
+                    noteEditMessage.editableText.toString(),
+                )
+                if (noteId != -1) {
+                    note.id = noteId
+                    noteDao.update(note)
+                } else {
+                    noteDao.insertAll(note)
+                }
+                runOnUiThread {
+                    Toast.makeText(
+                        this@NoteEditActivity,
+                        "Note saved",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
             }
-            Toast.makeText(this, noteDao.getAll().toString(), Toast.LENGTH_LONG).show()
-            finish()
         }
     }
 
