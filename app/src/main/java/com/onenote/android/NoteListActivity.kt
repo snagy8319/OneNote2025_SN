@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 
 class NoteListActivity : AppCompatActivity() {
@@ -19,7 +17,6 @@ class NoteListActivity : AppCompatActivity() {
     private lateinit var noteDao: NoteDao
     private lateinit var adapter: NoteAdapter
     private var selectedNoteId: Int = -1
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,14 +60,34 @@ class NoteListActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
+ override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+        android.R.id.home -> {
             finish()
-        } else if (item.itemId == R.id.delete) {
-            showDeleteDialog()
+            true
         }
-        return super.onOptionsItemSelected(item)
+        R.id.add -> {
+            val intent = Intent(this, NoteEditActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        R.id.edit -> {
+            if (selectedNoteId != -1) {
+                val intent = Intent(this, NoteEditActivity::class.java)
+                intent.putExtra("noteId", selectedNoteId)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Please select a note to edit", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
+        R.id.delete -> {
+            showDeleteDialog()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
+}
 
     private fun showDeleteDialog() {
         AlertDialog.Builder(this)
