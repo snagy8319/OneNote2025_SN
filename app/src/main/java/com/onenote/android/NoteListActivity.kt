@@ -36,14 +36,16 @@ class NoteListActivity : AppCompatActivity() {
             NotesDatabase::class.java, "notes"
         ).allowMainThreadQueries().build()
         noteDao = db.noteDao()
-        adapter = NoteAdapter(this, noteDao.getAll())
+        adapter = NoteAdapter(this, noteDao.getAll(), selectedNoteId)
 
         // Set adapter
-        listView.setAdapter(adapter)
+        listView.adapter = adapter
 
         // Set item click listener
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             selectedNoteId = adapter.getItemId(position).toInt()
+            adapter.selectedNoteId = selectedNoteId
+            adapter.notifyDataSetChanged()
         }
     }
 

@@ -1,13 +1,14 @@
 package com.onenote.android
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 
-class NoteAdapter(context: Context, var notes: List<Note>): BaseAdapter() {
+class NoteAdapter(context: Context, var notes: List<Note>, var selectedNoteId: Int): BaseAdapter() {
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -40,8 +41,16 @@ class NoteAdapter(context: Context, var notes: List<Note>): BaseAdapter() {
             holder = convertView.tag as ViewHolder
         }
 
-        holder.title.text = notes[position].title
-        holder.message.text = notes[position].message
+        val note = notes[position]
+        holder.title.text = note.title
+        holder.message.text = note.message
+
+        // Highlight the selected item
+        if (note.id == selectedNoteId) {
+            view.setBackgroundColor(Color.LTGRAY)
+        } else {
+            view.setBackgroundColor(Color.TRANSPARENT)
+        }
 
         return view
     }
