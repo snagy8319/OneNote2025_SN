@@ -13,15 +13,11 @@ import androidx.room.Room
 
 class NoteEditActivity : AppCompatActivity() {
 
-    private lateinit var preferences: Preferences
     private lateinit var noteDao: NoteDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_edit)
-
-        // Init Preferences
-        preferences = Preferences(this)
 
         // Set up toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -50,12 +46,11 @@ class NoteEditActivity : AppCompatActivity() {
                 noteEditMessage.setText(it.message)
             }
         }
-
         // Set OnClickListener
         buttonSave.setOnClickListener {
             var note = Note(
+                noteEditTitle.editableText.toString(),
                 noteEditMessage.editableText.toString(),
-                noteEditTitle.editableText.toString()
             )
             if (noteId != -1) {
                 note.id = noteId
@@ -70,7 +65,6 @@ class NoteEditActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_edit, menu)
-
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -88,8 +82,13 @@ class NoteEditActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setMessage(getString(R.string.delete_message))
             .setPositiveButton(R.string.yes) { _, _ ->
-                preferences.setNoteTitle(null)
-                preferences.setNoteMessage(null)
+                val noteId = intent.getIntExtra("noteId", -1)
+                if (noteId != -1) {
+                    val note = noteDao.loadAllByIds(noteId).firstOrNull()
+                    note?.let {
+                        noteDao.delete(it)
+                    }
+                }
                 finish()
             }
             .setNegativeButton(getString(R.string.no), null)

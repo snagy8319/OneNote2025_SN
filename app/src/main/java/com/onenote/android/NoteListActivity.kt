@@ -10,6 +10,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.room.Room
 
 class NoteListActivity : AppCompatActivity() {
@@ -59,32 +60,32 @@ class NoteListActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_list, menu)
-
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.add -> {
-                // Open NoteEditActivity
-                val intent = Intent(this, NoteEditActivity::class.java)
-                startActivity(intent)
-                return true
-            }
-            R.id.edit -> {
-                if (selectedNoteId != -1) {
-                    // Open NoteEditActivity with the selected note's details
-                    val intent = Intent(this, NoteEditActivity::class.java).apply {
-                        putExtra("noteId", selectedNoteId)
-                    }
-                    startActivity(intent)
-                    return true
-                } else {
-                    // Show a message if no note is selected
-                    Toast.makeText(this, "Please select a note to edit", Toast.LENGTH_SHORT).show()
-                }
-            }
+        if (item.itemId == android.R.id.home) {
+            finish()
+        } else if (item.itemId == R.id.delete) {
+            showDeleteDialog()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDeleteDialog() {
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.delete_message))
+            .setPositiveButton(R.string.yes) { _, _ ->
+                val noteId = intent.getIntExtra("noteId", -1)
+                if (noteId != -1) {
+                    val note = noteDao.loadAllByIds(noteId).firstOrNull()
+                    note?.let {
+                        noteDao.delete(it)
+                    }
+                }
+                finish()
+            }
+            .setNegativeButton(getString(R.string.no), null)
+            .show()
     }
 }
