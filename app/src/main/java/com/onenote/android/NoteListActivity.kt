@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
@@ -16,6 +17,8 @@ class NoteListActivity : AppCompatActivity() {
     private lateinit var listView: ListView
     private lateinit var noteDao: NoteDao
     private lateinit var adapter: NoteAdapter
+    private var selectedNoteId: Int = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,11 @@ class NoteListActivity : AppCompatActivity() {
 
         // Set adapter
         listView.setAdapter(adapter)
+
+        // Set item click listener
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            selectedNoteId = adapter.getItemId(position).toInt()
+        }
     }
 
     override fun onResume() {
@@ -54,13 +62,27 @@ class NoteListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.add) {
-
-            // Open NoteEditActivity
-            val intent = Intent(this, NoteEditActivity::class.java)
-            startActivity(intent)
+        when (item.itemId) {
+            R.id.add -> {
+                // Open NoteEditActivity
+                val intent = Intent(this, NoteEditActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.edit -> {
+                if (selectedNoteId != -1) {
+                    // Open NoteEditActivity with the selected note's details
+                    val intent = Intent(this, NoteEditActivity::class.java).apply {
+                        putExtra("noteId", selectedNoteId)
+                    }
+                    startActivity(intent)
+                    return true
+                } else {
+                    // Show a message if no note is selected
+                    Toast.makeText(this, "Please select a note to edit", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
-
         return super.onOptionsItemSelected(item)
     }
 }

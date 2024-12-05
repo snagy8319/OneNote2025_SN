@@ -41,16 +41,29 @@ class NoteEditActivity : AppCompatActivity() {
         val noteEditMessage = findViewById<EditText>(R.id.noteEditMessage)
         val buttonSave = findViewById<Button>(R.id.buttonSave)
 
-        // Set title and message if available
-        noteEditTitle.setText(preferences.getNoteTitle())
-        noteEditMessage.setText(preferences.getNoteMessage())
+        // Check if we are editing an existing note
+        val noteId = intent.getIntExtra("noteId", -1)
+        if (noteId != -1) {
+            val note = noteDao.loadAllByIds(noteId).firstOrNull()
+            note?.let {
+                noteEditTitle.setText(it.title)
+                noteEditMessage.setText(it.message)
+            }
+        }
 
         // Set OnClickListener
-        buttonSave.setOnClickListener{
-            val note = Note(noteEditMessage.editableText.toString(), noteEditTitle.editableText.toString())
-            noteDao.insertAll(note)
+        buttonSave.setOnClickListener {
+            var note = Note(
+                noteEditMessage.editableText.toString(),
+                noteEditTitle.editableText.toString()
+            )
+            if (noteId != -1) {
+                note.id = noteId
+                noteDao.update(note)
+            } else {
+                noteDao.insertAll(note)
+            }
             Toast.makeText(this, noteDao.getAll().toString(), Toast.LENGTH_LONG).show()
-
             finish()
         }
     }
