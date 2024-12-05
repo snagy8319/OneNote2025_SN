@@ -10,4 +10,5 @@ data class
 Note(
     @ColumnInfo(name="title") var title: String,
     @ColumnInfo(name="message") var message: String,
+    @ColumnInfo(name="image") var image: String,
     @PrimaryKey(autoGenerate = true) var id: Int = 0)

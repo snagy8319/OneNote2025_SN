@@ -8,6 +8,8 @@
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="saved">Saved</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
     <string name="delete">Delete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
