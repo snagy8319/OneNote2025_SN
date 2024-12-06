@@ -12,6 +12,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -33,6 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
+import org.osmdroid.library.BuildConfig
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -55,7 +57,6 @@ class NoteEditActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var map: MapView
 
-
     private var noteId: Int = -1
     private var currentPhotoPath: String? = null
     private var note: Note? = null
@@ -66,6 +67,9 @@ class NoteEditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val configuration = Configuration.getInstance()
+        configuration.userAgentValue = BuildConfig.APPLICATION_ID
+        configuration.load(this, PreferenceManager.getDefaultSharedPreferences(this))
         setContentView(R.layout.activity_note_edit)
 
         // Set up toolbar
@@ -144,6 +148,8 @@ class NoteEditActivity : AppCompatActivity() {
                 } else {
                     noteDao.insertAll(note)
                 }
+
+
                 runOnUiThread {
                     Toast.makeText(
                         this@NoteEditActivity,
