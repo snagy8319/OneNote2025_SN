@@ -2,6 +2,10 @@ package com.onenote.android
 
 import android.Manifest
 import android.app.Activity
+import android.location.Location
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnCompleteListener
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -15,6 +19,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -41,8 +46,14 @@ class NoteEditActivity : AppCompatActivity() {
     private lateinit var buttonCamera: Button
     private lateinit var buttonGallery: Button
     private lateinit var imagePreview: ImageView
+    private lateinit var latitudeTextView: TextView
+    private lateinit var longitudeTextView: TextView
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private var noteId: Int = -1
     private var currentPhotoPath: String? = null
+    private var note: Note? = null
+
 
     private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_IMAGE_PICK = 2
@@ -64,6 +75,9 @@ class NoteEditActivity : AppCompatActivity() {
         ).allowMainThreadQueries().build()
         noteDao = db.noteDao()
 
+        // Initialize FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         // Find views by ID
         noteEditTitle = findViewById(R.id.noteEditTitle)
         noteEditMessage = findViewById(R.id.noteEditMessage)
@@ -71,7 +85,8 @@ class NoteEditActivity : AppCompatActivity() {
         buttonCamera = findViewById(R.id.button_camera)
         buttonGallery = findViewById(R.id.button_gallery)
         imagePreview = findViewById(R.id.image_preview)
-
+        latitudeTextView = findViewById(R.id.latitudeTextView)
+        longitudeTextView = findViewById(R.id.longitudeTextView)
 
         // Check if we are editing an existing note
         noteId = intent.getIntExtra("noteId", -1)
@@ -81,7 +96,7 @@ class NoteEditActivity : AppCompatActivity() {
         // Load note if editing
         if (noteId != -1) {
             CoroutineScope(Dispatchers.IO).launch {
-                val note = noteDao.loadAllByIds(noteId).firstOrNull()
+                note = noteDao.loadAllByIds(noteId).firstOrNull()
                 note?.let {
                     runOnUiThread {
                         noteEditTitle.setText(it.title)
@@ -93,12 +108,16 @@ class NoteEditActivity : AppCompatActivity() {
                                 imagePreview.setImageURI(uri)
                             }
                         }
+                        if (it.latitude != null && it.longitude != null) {
+                            latitudeTextView.text = "Latitude: ${it.latitude}"
+                            longitudeTextView.text = "Longitude: ${it.longitude}"
+                        }
                     }
                 }
             }
         }
 
-        // Set OnClickListener
+        // Set OnClickListener for Save button
         buttonSave.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val note = Note(
@@ -138,8 +157,46 @@ class NoteEditActivity : AppCompatActivity() {
             }
         }
 
+
+        // Request location permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 1)
+        } else {
+            getLastLocation()
+        }
     }
 
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnCompleteListener(OnCompleteListener<Location> { task ->
+                if (task.isSuccessful && task.result != null) {
+                    val location: Location? = task.result
+                    location?.let {
+                        val latitude = it.latitude
+                        val longitude = it.longitude
+                        latitudeTextView.text = "Latitude: $latitude"
+                        longitudeTextView.text = "Longitude: $longitude"
+                        saveLocationToDatabase(latitude, longitude)
+                    }
+                } else {
+                    Toast.makeText(this, "Failed to get location", Toast.LENGTH_LONG).show()
+                }
+            })
+        }
+    }
+
+
+    private fun saveLocationToDatabase(latitude: Double, longitude: Double) {
+        note?.let {
+            it.latitude = latitude
+            it.longitude = longitude
+            CoroutineScope(Dispatchers.IO).launch {
+                noteDao.update(it)
+            }
+        }
+    }
 
     private fun checkAndRequestPermissions(): Boolean {
         val permissions = mutableListOf(

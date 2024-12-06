@@ -47,7 +47,7 @@ class NoteAdapter(context: Context, var notes: List<Note>, var selectedNoteId: I
 
         // Highlight the selected item
         if (note.id == selectedNoteId) {
-            view.setBackgroundColor(Color.LTGRAY)
+            view.setBackgroundColor(Color.rgb(98, 98, 98))
         } else {
             view.setBackgroundColor(Color.TRANSPARENT)
         }
