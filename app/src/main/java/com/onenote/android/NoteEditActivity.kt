@@ -32,6 +32,10 @@ import androidx.room.Room
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -49,6 +53,8 @@ class NoteEditActivity : AppCompatActivity() {
     private lateinit var latitudeTextView: TextView
     private lateinit var longitudeTextView: TextView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var map: MapView
+
 
     private var noteId: Int = -1
     private var currentPhotoPath: String? = null
@@ -87,11 +93,11 @@ class NoteEditActivity : AppCompatActivity() {
         imagePreview = findViewById(R.id.image_preview)
         latitudeTextView = findViewById(R.id.latitudeTextView)
         longitudeTextView = findViewById(R.id.longitudeTextView)
+        map = findViewById(R.id.map)
+        map.setMultiTouchControls(true)
 
         // Check if we are editing an existing note
         noteId = intent.getIntExtra("noteId", -1)
-
-
 
         // Load note if editing
         if (noteId != -1) {
@@ -111,6 +117,13 @@ class NoteEditActivity : AppCompatActivity() {
                         if (it.latitude != null && it.longitude != null) {
                             latitudeTextView.text = "Latitude: ${it.latitude}"
                             longitudeTextView.text = "Longitude: ${it.longitude}"
+                            val startPoint = GeoPoint(it.latitude!!, it.longitude!!)
+                            map.controller.setZoom(15.0)
+                            map.controller.setCenter(startPoint)
+                            val marker = Marker(map)
+                            marker.position = startPoint
+                            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            map.overlays.add(marker)
                         }
                     }
                 }
@@ -179,6 +192,13 @@ class NoteEditActivity : AppCompatActivity() {
                         latitudeTextView.text = "Latitude: $latitude"
                         longitudeTextView.text = "Longitude: $longitude"
                         saveLocationToDatabase(latitude, longitude)
+                        val startPoint = GeoPoint(latitude, longitude)
+                        map.controller.setZoom(15.0)
+                        map.controller.setCenter(startPoint)
+                        val marker = Marker(map)
+                        marker.position = startPoint
+                        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        map.overlays.add(marker)
                     }
                 } else {
                     Toast.makeText(this, "Failed to get location", Toast.LENGTH_LONG).show()
@@ -322,5 +342,16 @@ class NoteEditActivity : AppCompatActivity() {
             }
             .setNegativeButton(getString(R.string.no), null)
             .show()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        map.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        map.onPause()
     }
 }

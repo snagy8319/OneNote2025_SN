@@ -43,6 +43,9 @@
         <activity
             android:name=".NoteEditActivity">
         </activity>
+        <activity
+            android:name=".NoteMapActivity">
+        </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.onenote.android.fileprovider"
@@ -64,6 +67,12 @@
     <!-- Add the following permissions to the AndroidManifest.xml file to enable location services. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <!-- Add the following permissions to the AndroidManifest.xml file to enable network access. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
 
 
