@@ -1,9 +1,7 @@
 package com.onenote.android
 
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.provider.Settings
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
@@ -27,9 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
 
-      /*  val mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI)
-        mediaPlayer.start()
-*/
         // Find views by IDs
         val buttonLogin = findViewById<Button>(R.id.login)
         val imageViewIcon = findViewById<ImageView>(R.id.icon)

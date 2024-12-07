@@ -1,18 +1,56 @@
-# Code Structure
+# Note Management App User Guide
 
-## Activity Setup:  
- * The onCreate method sets up the toolbar, initializes the Room database, and sets up the ListView with an adapter.
- * The onResume method reloads the notes to ensure the list is up-to-date.
+## Overview
+The Note Management App allows you to create, edit, view, and delete notes. You can also add images to your notes and view their location on a map.
 
-## Menu Handling:  
- * The onCreateOptionsMenu method inflates the menu from a resource file.
- * The onOptionsItemSelected method handles menu item selections for adding, editing, and deleting notes.
+## Main Features
+- **Create Notes**: Add new notes with a title, message, and optional image.
+- **Edit Notes**: Modify existing notes.
+- **View Notes**: Display a list of all your notes.
+- **Delete Notes**: Remove notes you no longer need.
+- **Add Images**: Capture or select images to attach to your notes.
+- **Location Tracking**: Automatically save the location where the note was created.
 
-## Database Interaction:  
- * The Room database is initialized with allowMainThreadQueries(), which is generally not recommended for production due to potential UI thread blocking. Consider using asynchronous queries with LiveData or Coroutines.
+## Getting Started
 
-## ListView Interaction:  
- * The onItemClickListener updates the selected note ID and refreshes the adapter.
+### Main Screen
+When you open the app, you will see the main screen with a login button and an animated icon.
 
-## Delete Confirmation:  
- * The showDeleteDialog method shows a confirmation dialog before deleting a note.
+- **Login Button**: Tap to log in and access your notes.
+
+### Note List
+After logging in, you will see a list of your notes.
+
+- **Add Note**: Tap the "+" icon to create a new note.
+- **Edit Note**: Select a note and tap the "Edit" icon to modify it.
+- **Delete Note**: Select a note and tap the "Delete" icon to remove it.
+
+### Creating and Editing Notes
+When creating or editing a note, you can:
+
+- **Title**: Enter the title of your note.
+- **Message**: Enter the message content of your note.
+- **Save**: Tap the "Save" button to save your note.
+- **Add Image**: Tap the camera icon to capture an image or the gallery icon to select an image from your device.
+- **Location**: The app will automatically save your current location.
+
+### Viewing Note Details
+When viewing a note, you can see:
+
+- **Title and Message**: The content of your note.
+- **Image**: The attached image, if any.
+- **Location**: The latitude and longitude where the note was created, displayed on a map.
+
+## Permissions
+The app requires the following permissions:
+
+- **Camera**: To capture images.
+- **Read External Storage**: To pick images from the gallery.
+- **Access Fine Location**: To retrieve your device's location.
+
+## Troubleshooting
+- **Location Not Available**: Ensure location services are enabled on your device.
+- **Image Not Displaying**: Check if the app has permission to access your storage.
+
+## Conclusion
+The Note Management App is designed to help you easily manage your notes with additional features like image attachment and location tracking. Enjoy using the app to keep your notes organized and accessible.
