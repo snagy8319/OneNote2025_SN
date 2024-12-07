@@ -1,5 +1,7 @@
 package com.onenote.android
 
+
+
 import android.util.Log
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.ListView
+
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +18,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Activity for displaying a list of notes.
+ * Allows the user to view, edit, and delete notes.
+ */
 class NoteListActivity : AppCompatActivity() {
 
     private lateinit var listView: ListView
@@ -22,9 +29,16 @@ class NoteListActivity : AppCompatActivity() {
     private lateinit var adapter: NoteAdapter
     private var selectedNoteId: Int = -1
 
+
+
+    /**
+     * Called when the activity is first created.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_list)
+
 
         // Set up toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -45,11 +59,11 @@ class NoteListActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val notes = noteDao.getAll()
+
                 runOnUiThread {
                     // Update UI with notes
                     adapter.notes = notes
                     listView.adapter = adapter
-
                 }
             } catch (e: Exception) {
                 Log.e("NoteListActivity", "Error loading notes", e)
@@ -67,14 +81,16 @@ class NoteListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Called when the activity is resumed.
+     */
     override fun onResume() {
         super.onResume()
-
-
         // Reload notes asynchronously with error handling
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val notes = noteDao.getAll()
+
                 runOnUiThread {
                     adapter.notes = notes
                     adapter.notifyDataSetChanged()
@@ -88,11 +104,21 @@ class NoteListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Creates the options menu.
+     * @param menu The options menu.
+     * @return True if the menu is created, false otherwise.
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_list, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
+    /**
+     * Handles options item selection.
+     * @param item The selected menu item.
+     * @return True if the item is handled, false otherwise.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
         android.R.id.home -> {
@@ -122,6 +148,9 @@ class NoteListActivity : AppCompatActivity() {
     }
 }
 
+    /**
+     * Shows a dialog to confirm note deletion.
+     */
     private fun showDeleteDialog() {
         AlertDialog.Builder(this)
             .setMessage(getString(R.string.delete_message))
@@ -148,4 +177,7 @@ class NoteListActivity : AppCompatActivity() {
             .setNegativeButton(getString(R.string.no), null)
             .show()
     }
+
+
+
 }

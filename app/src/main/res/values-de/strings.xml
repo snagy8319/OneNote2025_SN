@@ -17,4 +17,5 @@
     <string name="delete_message">Möchtest du diese Notiz wirklich löschen?</string>
     <string name="latitude">Breitengrad: </string>
     <string name="longitude">Längengrad: </string>
+    <string name="notes_count">Notizanzahl</string>
 </resources>

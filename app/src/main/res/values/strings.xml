@@ -17,4 +17,5 @@
     <string name="delete_message">Do you really want to delete this note?</string>
     <string name="latitude">Latitude: </string>
     <string name="longitude">Longitude: </string>
+    <string name="notes_count">Note Count</string>
 </resources>
